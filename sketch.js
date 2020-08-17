@@ -177,17 +177,21 @@ function addMethodsToObjects() {
         axis.visible = !axis.visible;
     }
 
-    action.showModal = function (value) {
+    action.loadTemplate = function (id) {
+        templatka = templateHTML.querySelector(id);
+        clone = templatka.content.cloneNode(true);
+        insert = clone.querySelector(".modal-content");
+        select(".modal-dialog").child(insert);
+    }
+
+    action.showModal = function (value, saveType) {
         let el;
         select(".modal-dialog").html("");
 
         switch (value) {
 
             case "changeSet":
-                templatka = templateHTML.querySelector("#changeSet");
-                clone = templatka.content.cloneNode(true);
-                insert = clone.querySelector(".modal-content");
-                select(".modal-dialog").child(insert);
+                action.loadTemplate("#changeSet");
 
                 el = createSelect();
                 el.option("Numeracja");
@@ -205,11 +209,7 @@ function addMethodsToObjects() {
                 break;
 
             case 'changeSegmentContent':
-
-                templatka = templateHTML.querySelector("#changeSegmentContent");
-                clone = templatka.content.cloneNode(true);
-                insert = clone.querySelector(".modal-content");
-                select(".modal-dialog").child(insert);
+                action.loadTemplate("#changeSegmentContent");
 
                 el = createSelect();
                 el.option("Brak");
@@ -227,11 +227,7 @@ function addMethodsToObjects() {
                 break;
 
             case 'symetryDrawing':
-
-                templatka = templateHTML.querySelector("#symetryDrawing");
-                clone = templatka.content.cloneNode(true);
-                insert = clone.querySelector(".modal-content");
-                select(".modal-dialog").child(insert);
+                action.loadTemplate("#symetryDrawing");
 
                 el = createSelect();
                 el.option("Brak");
@@ -249,11 +245,7 @@ function addMethodsToObjects() {
                 break;
 
             case 'changeColorSet':
-
-                templatka = templateHTML.querySelector("#changeColorSet");
-                clone = templatka.content.cloneNode(true);
-                insert = clone.querySelector(".modal-content");
-                select(".modal-dialog").child(insert);
+                action.loadTemplate("#changeColorSet");
                 this.refreshColorSets();
 
                 if (!select(".ownColors")) {
@@ -276,25 +268,15 @@ function addMethodsToObjects() {
                 break;
 
             case "DisplayColorDesc":
-
-                templatka = templateHTML.querySelector("#displayColorDesc");
-                clone = templatka.content.cloneNode(true);
-                insert = clone.querySelector(".modal-content");
-                select(".modal-dialog").child(insert);
+                action.loadTemplate("#displayColorDesc");
 
                 select(".colorSchemeContainer").hide();
                 select(".p5Canvas").hide();
 
                 let btn = createButton('Zapis do pliku');
                 btn.addClass("btn btn-success saveColorDsc");
-                btn.attribute("onclick", "action.saveColorDsc()");
-
-                let footer = select(".modal-footer")
-                let exBtn = footer.html();
-
-                footer.html("");
-                footer.child(btn);
-                footer.html(exBtn, true);
+                btn.attribute("onclick", "action.colorDscTransition()");
+                select(".footerLeft").child(btn);
 
                 const letters = getLettersFromAlphabet();
 
@@ -360,10 +342,7 @@ function addMethodsToObjects() {
 
             case 'addCustomColorSet':
                 $('#modal').modal('show');
-
-                templatka = templateHTML.querySelector("#addCustomColorSet");
-                clone = templatka.content.cloneNode(true);
-                insert = clone.querySelector(".modal-content");
+                action.loadTemplate("#addCustomColorSet");
                 select(".modal-dialog").child(insert);
 
                 for (let col of settings.colorMatrix) {
@@ -383,11 +362,7 @@ function addMethodsToObjects() {
 
             case 'loadColorsFromFile':
                 $('#modal').modal('show');
-
-                templatka = templateHTML.querySelector("#loadColorsFromFile");
-                clone = templatka.content.cloneNode(true);
-                insert = clone.querySelector(".modal-content");
-                select(".modal-dialog").child(insert);
+                action.loadTemplate("#loadColorsFromFile");
 
                 let input = createFileInput(handleFile, false);
                 input.attribute("accept", "application/json");
@@ -396,16 +371,58 @@ function addMethodsToObjects() {
 
                 break;
 
+            case "saveFile":
+                $('#modal').modal('show');
+                action.loadTemplate("#saveFile");
+                settings["fileName"] = 'plik';
+
+                let extension = '';
+
+                if (saveType == 'img') {
+                    let data = new Date();
+                    settings.fileName = `plansza-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`;
+                    extension = '.png';
+                    select('.fileNameBtn').attribute('onclick', `action.saveImg()`);
+                } else if (saveType == 'json') {
+                    settings.fileName = 'kolory';
+                    extension = '.json';
+                    select('.fileNameBtn').attribute('onclick', `action.saveColorSets()`);
+                } else if (saveType == 'dsc') {
+                    let data = new Date();
+                    settings.fileName = `zakodowanaPlansza-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`;
+                    extension = '.png';
+                    select('.fileNameBtn').attribute('onclick', `action.saveColorDsc()`);
+                }
+
+                select(".insertFileInfo").html(settings.fileName + extension)
+
+                let fileNameInput = createInput(settings.fileName);
+                fileNameInput.addClass("form-control fileNameInput");
+                fileNameInput.changed(() => {
+                    settings.fileName = select('.fileNameInput').value();
+                    select(".insertFileInfo").html(settings.fileName + extension)
+                });
+                select(".modal-body").child(fileNameInput);
+
+                break;
+
+
             default:
                 break;
         }
     }
 
+    action.colorDscTransition = function () {
+        action.generateColorDsc();
+        action.showModal('saveFile', 'dsc');
+    }
+
+    action.generateColorDsc = function () {
+        settings['savedDsc'] = html2canvas(document.querySelector(".modal-body"));
+    }
+
     action.saveColorDsc = function () {
-        const data = new Date();
-        html2canvas(document.querySelector(".modal-body")).then(canvas => {
-            saveCanvas(canvas, `zakodowanaPlansza-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`, 'png')
-        });
+        settings.savedDsc.then((canvas) => saveCanvas(canvas, settings.fileName, 'png'));
     }
 
     action.saveColorSets = function () {
@@ -431,7 +448,7 @@ function addMethodsToObjects() {
         }
 
         json.setsOfColors = listOfSets;
-        saveJSON(json, "kolory");
+        saveJSON(json, settings.fileName);
     }
 
     action.refreshColorSets = function () {
@@ -634,8 +651,7 @@ function addMethodsToObjects() {
     }
 
     action.saveImg = function () {
-        let data = new Date();
-        saveCanvas(`plansza-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`, 'png');
+        saveCanvas(settings.fileName, 'png');
     }
 
     action.hideColorPalette = function () {

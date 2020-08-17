@@ -8,28 +8,37 @@
         <div class="sidebar-content">
 
             <a href="#submenuPlansza" class="dropdown-toggle" data-toggle="collapse" aria-expanded="false">Plansza</a>
+
             <ul class="collapse list-unstyled" id="submenuPlansza">
                 <li class="menuOption"><a href="#" onclick="action.togAxis()">Pokaż osie</a></li>
                 <li class="menuOption"><a href="#" onclick="action.showModal('changeSet')" data-toggle="modal"
                         data-target="#modal">Zmiana opisu pól</a></li>
                 <li class="menuOption"><a href="#" onclick="action.resetBoard()">Reset planszy</a></li>
+
             </ul><a href="#submenuRysowanie" class="dropdown-toggle" data-toggle="collapse"
                 aria-expanded="false">Rysowanie</a>
+
             <ul class="collapse list-unstyled" id="submenuRysowanie">
                 <li class="menuOption"><a href="#" onclick="action.showModal('symetryDrawing')" data-toggle="modal"
                         data-target="#modal">Ustawienia symetrii</a></li>
                 <li class="menuOption"><a href="#" onclick="action.showModal('changeSegmentContent')"
                         data-toggle="modal" data-target="#modal">Zmiana zawartości pól</a></li>
+
             </ul><a href="#submenuUdostępnianie" class="dropdown-toggle" data-toggle="collapse"
                 aria-expanded="false">Udostępnianie</a>
+
             <ul class="collapse list-unstyled" id="submenuUdostępnianie">
-                <li class="menuOption"><a href="#" onclick="action.saveImg()">Zapis planszy do pliku</a></li>
+
+                <li class="menuOption"><a href="#" onclick="action.showModal('saveFile','img')">Zapis planszy do
+                        pliku</a></li>
                 <li class="menuOption"><a href="#" onclick="action.showModal('DisplayColorDesc')" data-toggle="modal"
                         data-target="#modal">Zakoduj rysunek</a></li>
-                <li class="menuOption"><a href="#" onclick="action.saveColorSets()">Zapis zestawów kolorów do pliku</a>
+                <li class="menuOption"><a href="#" onclick="action.showModal('saveFile','json')">Zapis zestawów kolorów
+                        do pliku</a>
                 </li>
             </ul><a href="#submenuDostosowywanie" class="dropdown-toggle" data-toggle="collapse"
                 aria-expanded="false">Dostosowywanie</a>
+
             <ul class="collapse list-unstyled" id="submenuDostosowywanie">
                 <li class="menuOption"><a href="#" onclick="action.showModal('changeColorSet')" data-toggle="modal"
                         data-target="#modal">Zestawy kolorów</a></li>
@@ -170,6 +179,8 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
+                <div class="footerLeft col-6 text-right">
+                </div>
                 <div class="footerRight col-6 text-right">
                     <button type="button" class="btn btn-primary order-2 modalBtn" data-dismiss="modal">Zamknij</button>
                 </div>
@@ -228,6 +239,35 @@
                 <div class="footerRight col-6 text-right">
                     <button type="button" class="btn btn-primary order-2 modalBtn" data-dismiss="modal"
                         onclick="userInterface.loadSave()">Wczytaj zapis</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </template>
+
+    <template class="modal" id="saveFile">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="modalLabel">Zapisz plik</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+                <p>Plik zostanie zapisany jako: <span class="insertFileInfo font-weight-bold"></span></p>
+                <p class="font-weight-light">Edytuj nazwę pliku:</p>
+            </div>
+            <div class="modal-footer">
+                <div class="footerRight col-6 text-right">
+                    <button type="button" class="btn btn-primary order-2 modalBtn fileNameBtn" data-dismiss="modal"
+                        onclick="">Zapisz plik</button>
                 </div>
 
             </div>
