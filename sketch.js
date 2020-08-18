@@ -380,7 +380,7 @@ function addMethodsToObjects() {
 
                 if (saveType == 'img') {
                     let data = new Date();
-                    settings.fileName = `plansza-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`;
+                    settings.fileName = `plansza-${data.getDay()}-${data.getMonth()}-${data.getFullYear()}-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`;
                     extension = '.png';
                     select('.fileNameBtn').attribute('onclick', `action.saveImg()`);
                 } else if (saveType == 'json') {
@@ -389,7 +389,7 @@ function addMethodsToObjects() {
                     select('.fileNameBtn').attribute('onclick', `action.saveColorSets()`);
                 } else if (saveType == 'dsc') {
                     let data = new Date();
-                    settings.fileName = `zakodowanaPlansza-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`;
+                    settings.fileName = `zakodowanaPlansza-${data.getDay()}-${data.getMonth()}-${data.getFullYear()}-${data.getHours()}-${data.getMinutes()}-${data.getSeconds()}`;
                     extension = '.png';
                     select('.fileNameBtn').attribute('onclick', `action.saveColorDsc()`);
                 }
